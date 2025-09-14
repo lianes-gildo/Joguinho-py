@@ -6,7 +6,7 @@ pygame.init()
 
 largura, altura = 600, 600
 tela = pygame.display.set_mode((largura, altura))
-pygame.display.set_caption("Esquiva Blocos")
+pygame.display.set_caption("Esquiva Obstaculos")
 clock = pygame.time.Clock()
 fonte = pygame.font.SysFont(None, 36)
 
@@ -56,37 +56,63 @@ jogo_ativo = True
 
 rodando = True
 while rodando:
-    tela.fill((40, 40, 40))
+    tela.fill((30, 30, 30))
 
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
             rodando = False
+        if evento.type == pygame.KEYDOWN and not jogo_ativo:
+            if evento.key == pygame.K_SPACE:
+                if score > recorde:
+                    recorde = score
+                    salvar_recorde(recorde)
+                jogador, obstaculos, score = resetar_jogo()
+                jogo_ativo = True
 
-    teclas = pygame.key.get_pressed()
-    if teclas[pygame.K_LEFT] and jogador.left > 0:
-        jogador.x -= velocidade
-    if teclas[pygame.K_RIGHT] and jogador.right < largura:
-        jogador.x += velocidade
-
-   
-    if random.randint(1, 30) == 1:
-        obstaculos.append(criar_obstaculos())
-
-    for obstaculo in obstaculos:
+    if jogo_ativo:
         
-        obstaculo.y += 5
+        teclas = pygame.key.get_pressed()
+        if teclas[pygame.K_LEFT] and jogador.left > 0:
+            jogador.x -= velocidade
+        if teclas[pygame.K_RIGHT] and jogador.right < largura:
+            jogador.x += velocidade
 
-        if obstaculo.colliderect(jogador):
-            rodando = False
+        
+        if random.randint(1, 30) == 1:
+            obstaculos.append(criar_obstaculos())
 
-        pygame.draw.rect(tela, (255, 0, 0), obstaculo)
+        
+        for obstaculo in obstaculos:
+            obstaculo.y += 5
+            if obstaculo.colliderect(jogador):
+                jogo_ativo = False
+
+        
+        novos_obstaculos = []
+        for obstaculo in obstaculos:
+            if obstaculo.y < altura:
+                novos_obstaculos.append(obstaculo)
+            else:
+                score += 1
+        obstaculos = novos_obstaculos
+
+        
+        for obstaculo in obstaculos:
+            pygame.draw.ellipse(tela, (255, 0, 0), obstaculo)
+
        
+        desenhar_jogador_triangulo(jogador)
+
         
-    obstaculos = [obstaculo for obstaculo in obstaculos if obstaculo.y < altura]
+        desenhar_texto(f"Score: {score}", 10, 10)
+        desenhar_texto(f"Recorde: {recorde}", 10, 40)
 
-    
-    pygame.draw.rect(tela, (0, 255, 0), jogador)
-
+    else:
+        
+        desenhar_texto("Game Over!", 220, 300, (255, 0, 0))
+        desenhar_texto(f"Score final: {score}", 210, 350)
+        desenhar_texto(f"Recorde atual: {recorde}", 200, 390)
+        desenhar_texto("Pressione ESPAÇO para reiniciar", 130, 450)
     pygame.display.flip()
     clock.tick(60)
 
