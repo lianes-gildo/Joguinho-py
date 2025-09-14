@@ -1,5 +1,6 @@
 import pygame
 import random
+import os
 
 pygame.init()
 
@@ -31,9 +32,27 @@ def criar_obstaculos():
     x = random.randint(0, largura - 40)
     return pygame.Rect(x, -40, 40, 40)
 
-jogador = pygame.Rect(180, 500, 40, 40)
+def desenhar_texto(texto, x, y, cor=(255, 255, 255)):
+    imagem_texto = fonte.render(texto, True, cor)
+    tela.blit(imagem_texto, (x, y))
+
+
+def desenhar_jogador_triangulo(rect, cor=(0, 255, 0)):
+    centro_x = rect.centerx
+    topo = (centro_x, rect.top)
+    canto_esquerdo = (rect.left, rect.bottom)
+    canto_direito = (rect.right, rect.bottom)
+    pygame.draw.polygon(tela, cor, [topo, canto_esquerdo, canto_direito])
+    
+def resetar_jogo():
+    jogador = pygame.Rect(largura//2 - 20, altura - 100, 40, 40)
+    obstaculos = []
+    score = 0
+    return jogador, obstaculos, score
+
+jogador, obstaculos, score = resetar_jogo()
 velocidade = 5
-obstaculos = []
+jogo_ativo = True
 
 rodando = True
 while rodando:
