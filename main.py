@@ -3,17 +3,37 @@ import random
 
 pygame.init()
 
-largura, altura = 400, 600
+largura, altura = 600, 600
 tela = pygame.display.set_mode((largura, altura))
+pygame.display.set_caption("Esquiva Blocos")
 clock = pygame.time.Clock()
+fonte = pygame.font.SysFont(None, 36)
 
-jogador = pygame.Rect(180, 500, 40, 40)
-velocidade = 5
-obstaculos = []
+
+ARQUIVO_RECORDE = "recorde.txt"
+
+def carregar_recorde():
+    if os.path.exists(ARQUIVO_RECORDE):
+        with open(ARQUIVO_RECORDE, "r") as f:
+            try:
+                return int(f.read())
+            except:
+                return 0
+    return 0
+
+def salvar_recorde(novo_recorde):
+    with open(ARQUIVO_RECORDE, "w") as f:
+        f.write(str(novo_recorde))
+
+recorde = carregar_recorde()
 
 def criar_obstaculos():
     x = random.randint(0, largura - 40)
     return pygame.Rect(x, -40, 40, 40)
+
+jogador = pygame.Rect(180, 500, 40, 40)
+velocidade = 5
+obstaculos = []
 
 rodando = True
 while rodando:
