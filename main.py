@@ -16,3 +16,28 @@ def criar_obstaculos():
     return pygame.Rect(x, -40, 40, 40)
 
 rodando = True
+while rodando:
+    tela.fill((40, 40, 40))
+
+    for evento in pygame.event.get():
+        if evento.type == pygame.QUIT:
+            rodando = False
+
+    teclas = pygame.key.get_pressed()
+    if teclas[pygame.K_LEFT] and jogador.left > 0:
+        jogador.x -= velocidade
+    if teclas[pygame.K_RIGHT] and jogador.right < largura:
+        jogador.x += velocidade
+
+   
+    if random.randint(1, 30) == 1:
+        obstaculos.append(criar_obstaculos())
+
+    for obstaculo in obstaculos:
+        
+        obstaculo.y += 5
+
+        if obstaculo.colliderect(jogador):
+            rodando = False
+
+        pygame.draw.rect(tela, (255, 0, 0), obstaculo)
