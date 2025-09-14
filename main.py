@@ -41,3 +41,14 @@ while rodando:
             rodando = False
 
         pygame.draw.rect(tela, (255, 0, 0), obstaculo)
+       
+        
+    obstaculos = [obstaculo for obstaculo in obstaculos if obstaculo.y < altura]
+
+    
+    pygame.draw.rect(tela, (0, 255, 0), jogador)
+
+    pygame.display.flip()
+    clock.tick(60)
+
+pygame.quit()
